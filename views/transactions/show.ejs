@@ -1,0 +1,64 @@
+<%- include('../partials/header', { title: 'Detail Transaksi #' + transaction.id }) %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-success text-white fw-bold">
+        <i class="bi bi-check-circle-fill"></i> Transaksi Berhasil &mdash; #<%= transaction.id %>
+      </div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-4">Tanggal</dt>
+          <dd class="col-sm-8"><%= transaction.created_at %></dd>
+          <dt class="col-sm-4">Kasir</dt>
+          <dd class="col-sm-8"><%= transaction.cashier %></dd>
+        </dl>
+        <hr />
+        <h6 class="fw-bold">Item yang Dibeli</h6>
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th>Produk</th>
+              <th class="text-center">Qty</th>
+              <th class="text-end">Harga</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% transaction.items.forEach(item => { %>
+              <tr>
+                <td><%= item.product_name %></td>
+                <td class="text-center"><%= item.quantity %></td>
+                <td class="text-end">Rp <%= Number(item.price).toLocaleString('id-ID') %></td>
+                <td class="text-end">Rp <%= Number(item.subtotal).toLocaleString('id-ID') %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+          <tfoot class="fw-bold">
+            <tr class="table-success">
+              <td colspan="3" class="text-end">Total</td>
+              <td class="text-end">Rp <%= Number(transaction.total).toLocaleString('id-ID') %></td>
+            </tr>
+            <tr>
+              <td colspan="3" class="text-end">Bayar</td>
+              <td class="text-end">Rp <%= Number(transaction.payment).toLocaleString('id-ID') %></td>
+            </tr>
+            <tr class="table-warning">
+              <td colspan="3" class="text-end">Kembalian</td>
+              <td class="text-end">Rp <%= Number(transaction.change).toLocaleString('id-ID') %></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="card-footer bg-white d-flex gap-2">
+        <a href="/pos" class="btn btn-success"><i class="bi bi-cart-plus"></i> Transaksi Baru</a>
+        <a href="/transactions" class="btn btn-outline-secondary"><i class="bi bi-list-ul"></i> Riwayat</a>
+        <button class="btn btn-outline-primary ms-auto" onclick="window.print()">
+          <i class="bi bi-printer"></i> Cetak
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,47 @@
+<%- include('../partials/header', { title: 'Tambah Produk' }) %>
+
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        <i class="bi bi-plus-circle"></i> Tambah Produk Baru
+      </div>
+      <div class="card-body">
+        <% if (error) { %>
+          <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form action="/products" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nama Produk <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control" required placeholder="Contoh: Kopi Hitam" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Harga (Rp) <span class="text-danger">*</span></label>
+            <input type="number" name="price" class="form-control" required min="0" step="any" placeholder="15000" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Stok <span class="text-danger">*</span></label>
+            <input type="number" name="stock" class="form-control" required min="0" placeholder="100" />
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Kategori</label>
+            <input type="text" name="category" class="form-control" placeholder="Minuman, Makanan, dll"
+              list="category-list" />
+            <datalist id="category-list">
+              <% categories.forEach(c => { %>
+                <option value="<%= c.category %>"></option>
+              <% }) %>
+            </datalist>
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Simpan</button>
+            <a href="/products" class="btn btn-outline-secondary">Batal</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

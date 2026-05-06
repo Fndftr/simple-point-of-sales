@@ -1,0 +1,114 @@
+<%- include('../partials/header', { title: 'Kasir' }) %>
+
+<% if (typeof cartError !== 'undefined' && cartError) { %>
+  <div class="alert alert-danger alert-dismissible fade show">
+    <%= cartError %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<div class="row g-3">
+  <!-- Product Grid -->
+  <div class="col-lg-7">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-grid"></i> Pilih Produk</span>
+        <input type="search" id="productSearch" class="form-control form-control-sm w-auto" placeholder="Cari produk..." />
+      </div>
+      <div class="card-body" style="max-height:65vh; overflow-y:auto;">
+        <div class="row g-2" id="productGrid">
+          <% if (products.length === 0) { %>
+            <p class="text-muted text-center">Tidak ada produk tersedia.</p>
+          <% } %>
+          <% products.forEach(p => { %>
+            <div class="col-6 col-md-4 product-card" data-name="<%= p.name.toLowerCase() %>">
+              <form action="/pos/add" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <input type="hidden" name="product_id" value="<%= p.id %>" />
+                <input type="hidden" name="quantity" value="1" />
+                <button type="submit" class="btn btn-outline-primary w-100 h-100 py-3 text-start product-btn">
+                  <div class="fw-semibold text-truncate"><%= p.name %></div>
+                  <div class="text-success small">Rp <%= Number(p.price).toLocaleString('id-ID') %></div>
+                  <div class="text-muted small">Stok: <%= p.stock %></div>
+                </button>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart -->
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+        <span><i class="bi bi-cart3"></i> Keranjang</span>
+        <% if (cart.length > 0) { %>
+          <form action="/pos/clear" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button type="submit" class="btn btn-sm btn-outline-danger">Kosongkan</button>
+          </form>
+        <% } %>
+      </div>
+      <div class="card-body p-0" style="max-height:40vh; overflow-y:auto;">
+        <% if (cart.length === 0) { %>
+          <p class="text-muted text-center py-4">Keranjang kosong.</p>
+        <% } else { %>
+          <table class="table table-sm align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Produk</th>
+                <th class="text-center">Qty</th>
+                <th class="text-end">Subtotal</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% cart.forEach(item => { %>
+                <tr>
+                  <td>
+                    <div class="fw-semibold"><%= item.product_name %></div>
+                    <div class="text-muted small">Rp <%= Number(item.price).toLocaleString('id-ID') %></div>
+                  </td>
+                  <td class="text-center"><%= item.quantity %></td>
+                  <td class="text-end">Rp <%= Number(item.subtotal).toLocaleString('id-ID') %></td>
+                  <td>
+                    <form action="/pos/remove" method="POST">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                      <input type="hidden" name="product_id" value="<%= item.product_id %>" />
+                      <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+      </div>
+      <div class="card-footer bg-light">
+        <div class="d-flex justify-content-between fw-bold fs-5 mb-3">
+          <span>Total:</span>
+          <span class="text-success">Rp <%= Number(cartTotal).toLocaleString('id-ID') %></span>
+        </div>
+        <% if (cart.length > 0) { %>
+          <form action="/pos/checkout" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">Jumlah Bayar (Rp)</label>
+              <input type="number" name="payment" class="form-control" min="<%= cartTotal %>" step="any"
+                placeholder="<%= cartTotal %>" required />
+            </div>
+            <button type="submit" class="btn btn-success w-100 btn-lg">
+              <i class="bi bi-check-circle"></i> Bayar
+            </button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
