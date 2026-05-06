@@ -1,0 +1,87 @@
+<%- include('../partials/head', { pageTitle, currentUser }) %>
+<section class="page-header">
+  <div>
+    <span class="eyebrow">Kasir</span>
+    <h1>Transaksi baru</h1>
+    <p>Masukkan item belanja dan metode pembayaran.</p>
+  </div>
+  <a class="button ghost" href="/products">Cek Produk</a>
+</section>
+<section class="panel form-grid">
+  <% if (error) { %><div class="alert error"><%= error %></div><% } %>
+  <form id="txn-form" class="stack" method="post" action="/transactions">
+    <input type="hidden" name="itemsJson" id="itemsJson" />
+    <div id="items-container" class="stack">
+      <div class="item-row">
+        <select class="product-select">
+          <option value="">Pilih produk</option>
+          <% products.forEach((product) => { %>
+            <option value="<%= product.id %>"><%= product.name %> - Rp <%= Number(product.price).toLocaleString('id-ID') %> (<%= product.stock %>)</option>
+          <% }) %>
+        </select>
+        <input class="qty-input" type="number" min="1" value="1" />
+        <button type="button" class="button ghost remove-row">Hapus</button>
+      </div>
+    </div>
+    <div class="row-actions">
+      <button type="button" id="add-row" class="button ghost">Tambah Item</button>
+    </div>
+    <div class="grid-form">
+      <label><span>Metode Pembayaran</span>
+        <select name="paymentMethod" id="paymentMethod">
+          <option value="CASH">CASH</option>
+          <option value="CARD">CARD</option>
+          <option value="QRIS">QRIS</option>
+          <option value="TRANSFER">TRANSFER</option>
+        </select>
+      </label>
+      <label><span>Cash Received</span><input name="cashReceived" id="cashReceived" type="number" min="0" step="1" value="0"></label>
+    </div>
+    <button class="button primary" type="submit">Simpan Transaksi</button>
+  </form>
+</section>
+<script>
+  const itemsContainer = document.getElementById('items-container');
+  const addRowButton = document.getElementById('add-row');
+  const form = document.getElementById('txn-form');
+  const itemsJson = document.getElementById('itemsJson');
+  const paymentMethod = document.getElementById('paymentMethod');
+  const cashReceived = document.getElementById('cashReceived');
+
+  const syncCashField = () => {
+    cashReceived.disabled = paymentMethod.value !== 'CASH';
+  };
+
+  const makeRow = () => {
+    const template = itemsContainer.querySelector('.item-row').cloneNode(true);
+    template.querySelector('.product-select').value = '';
+    template.querySelector('.qty-input').value = 1;
+    return template;
+  };
+
+  addRowButton.addEventListener('click', () => {
+    itemsContainer.appendChild(makeRow());
+  });
+
+  itemsContainer.addEventListener('click', (event) => {
+    if (event.target.classList.contains('remove-row')) {
+      const rows = itemsContainer.querySelectorAll('.item-row');
+      if (rows.length > 1) {
+        event.target.closest('.item-row').remove();
+      }
+    }
+  });
+
+  paymentMethod.addEventListener('change', syncCashField);
+  syncCashField();
+
+  form.addEventListener('submit', () => {
+    const rows = Array.from(itemsContainer.querySelectorAll('.item-row'));
+    const items = rows.map((row) => ({
+      productId: row.querySelector('.product-select').value,
+      quantity: row.querySelector('.qty-input').value,
+    })).filter((item) => item.productId);
+    itemsJson.value = JSON.stringify(items);
+  });
+</script>
+<%- include('../partials/footer') %>

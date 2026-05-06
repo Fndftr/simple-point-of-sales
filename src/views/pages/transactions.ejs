@@ -1,0 +1,30 @@
+<%- include('../partials/head', { pageTitle, currentUser }) %>
+<section class="page-header">
+  <div>
+    <span class="eyebrow">Transaksi</span>
+    <h1>Daftar transaksi</h1>
+    <p>Riwayat penjualan yang masuk ke sistem.</p>
+  </div>
+  <a class="button primary" href="/transactions/new">Buka Kasir</a>
+</section>
+<section class="panel">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Invoice</th><th>Kasir</th><th>Metode</th><th>Total</th><th>Tanggal</th></tr>
+      </thead>
+      <tbody>
+        <% transactions.forEach((transaction) => { %>
+          <tr>
+            <td><a href="/transactions/<%= transaction.id %>/receipt"><%= transaction.invoiceNumber %></a></td>
+            <td><%= transaction.user?.name || '-' %></td>
+            <td><%= transaction.paymentMethod %></td>
+            <td>Rp <%= Number(transaction.totalAmount).toLocaleString('id-ID') %></td>
+            <td><%= new Date(transaction.createdAt).toLocaleString('id-ID') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partials/footer') %>

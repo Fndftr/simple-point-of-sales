@@ -1,0 +1,64 @@
+<%- include('../partials/head', { pageTitle, currentUser }) %>
+<section class="page-header">
+  <div>
+    <span class="eyebrow">Laporan</span>
+    <h1>Laporan penjualan</h1>
+    <p>Rekap operasional untuk periode yang dipilih.</p>
+  </div>
+</section>
+<section class="stats-grid">
+  <article class="stat-card"><span>Transaksi</span><strong><%= report.totalTransactions %></strong></article>
+  <article class="stat-card"><span>Penjualan</span><strong>Rp <%= Number(report.totalSales).toLocaleString('id-ID') %></strong></article>
+  <article class="stat-card"><span>Item Terjual</span><strong><%= report.itemsSold %></strong></article>
+  <article class="stat-card"><span>Average Ticket</span><strong>Rp <%= Number(report.averageTicket).toLocaleString('id-ID') %></strong></article>
+</section>
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-head"><h2>Top Produk</h2></div>
+    <div class="stack">
+      <% report.topProducts.forEach((item) => { %>
+        <article class="list-card">
+          <div>
+            <strong><%= item.productName %></strong>
+            <div class="muted"><%= item.categoryName || 'Tanpa kategori' %></div>
+          </div>
+          <span class="pill"><%= item.quantitySold %> pcs</span>
+        </article>
+      <% }) %>
+      <% if (!report.topProducts.length) { %>
+        <p class="muted">Belum ada transaksi pada periode ini.</p>
+      <% } %>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h2>Metode Pembayaran</h2></div>
+    <div class="stack">
+      <% report.paymentMethodSummary.forEach((item) => { %>
+        <article class="list-card">
+          <strong><%= item.method %></strong>
+          <span class="pill"><%= item.count %> transaksi</span>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<section class="panel">
+  <div class="panel-head"><h2>Stok Rendah</h2></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Produk</th><th>Kategori</th><th>Stok</th></tr>
+      </thead>
+      <tbody>
+        <% report.lowStockProducts.forEach((product) => { %>
+          <tr>
+            <td><%= product.name %></td>
+            <td><%= product.category?.name || '-' %></td>
+            <td><%= product.stock %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partials/footer') %>

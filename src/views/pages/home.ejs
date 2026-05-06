@@ -1,0 +1,27 @@
+<%- include('../partials/head', { pageTitle, currentUser: null }) %>
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">Server-rendered POS</span>
+    <h1>Dashboard POS yang jalan di browser dan API yang siap dipakai aplikasi lain.</h1>
+    <p>Kelola produk, kategori, transaksi, stok, dan laporan dari satu project Express MVC yang lengkap.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="/login">Masuk ke Sistem</a>
+      <a class="button ghost" href="/api">Lihat API</a>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <div class="stat-card">
+      <span>Mode</span>
+      <strong>Hybrid MVC + API</strong>
+    </div>
+    <div class="stat-card">
+      <span>Fitur inti</span>
+      <strong>Kasir, stok, laporan</strong>
+    </div>
+    <div class="stat-card">
+      <span>Role</span>
+      <strong>SUPERADMIN / KASIR</strong>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>

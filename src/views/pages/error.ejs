@@ -1,0 +1,11 @@
+<%- include('../partials/head', { pageTitle, currentUser: currentUser || null }) %>
+<section class="panel">
+  <span class="eyebrow">Error</span>
+  <h1><%= message %></h1>
+  <p class="muted">Silakan kembali ke halaman utama atau login ulang.</p>
+  <div class="hero-actions">
+    <a class="button primary" href="/">Beranda</a>
+    <a class="button ghost" href="/login">Login</a>
+  </div>
+</section>
+<%- include('../partials/footer') %>

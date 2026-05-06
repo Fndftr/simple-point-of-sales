@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  SUPERADMIN
+  KASIR
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  username     String        @unique
+  password     String
+  role         Role          @default(KASIR)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  stockAdjustments StockAdjustment[]
+}
+
+model Product {
+  id               Int               @id @default(autoincrement())
+  name             String
+  price            Decimal
+  stock            Int               @default(0)
+  categoryId       Int?
+  category         Category?         @relation(fields: [categoryId], references: [id])
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  TransactionItems TransactionItem[]
+  stockAdjustments StockAdjustment[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Transaction {
+  id            Int               @id @default(autoincrement())
+  invoiceNumber String            @unique
+  totalAmount   Decimal
+  paymentMethod String            @default("CASH")
+  cashReceived  Decimal?
+  changeAmount  Decimal?
+  userId        Int
+  user          User              @relation(fields: [userId], references: [id])
+  createdAt     DateTime          @default(now())
+  items         TransactionItem[]
+}
+
+model TransactionItem {
+  id            Int         @id @default(autoincrement())
+  transactionId Int
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  productId     Int
+  product       Product     @relation(fields: [productId], references: [id])
+  quantity      Int
+  price         Decimal // Harga saat transaksi
+}
+
+model StockAdjustment {
+  id          Int      @id @default(autoincrement())
+  productId   Int
+  product     Product  @relation(fields: [productId], references: [id])
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  quantity    Int
+  reason      String
+  note        String?
+  createdAt   DateTime @default(now())
+}
