@@ -1,0 +1,49 @@
+<%- include('../partials/head', { pageTitle, currentUser }) %>
+<section class="page-header">
+  <div>
+    <span class="eyebrow">Stok</span>
+    <h1>Penyesuaian stok</h1>
+    <p>Tambahkan atau kurangi stok dengan histori tercatat.</p>
+  </div>
+</section>
+<section class="panel form-grid">
+  <h2>Adjustment Baru</h2>
+  <% if (error) { %><div class="alert error"><%= error %></div><% } %>
+  <form class="grid-form" method="post" action="/stock-adjustments">
+    <label><span>Produk</span>
+      <select name="productId" required>
+        <% products.forEach((product) => { %>
+          <option value="<%= product.id %>"><%= product.name %> (stok: <%= product.stock %>)</option>
+        <% }) %>
+      </select>
+    </label>
+    <label><span>Quantity</span><input name="quantity" type="number" step="1" required></label>
+    <label><span>Reason</span><input name="reason" required></label>
+    <label><span>Note</span><input name="note"></label>
+    <div class="full"><button class="button primary" type="submit">Simpan</button></div>
+  </form>
+</section>
+<section class="panel">
+  <div class="panel-head">
+    <h2>Riwayat Adjustment</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Produk</th><th>User</th><th>Qty</th><th>Reason</th><th>Tanggal</th></tr>
+      </thead>
+      <tbody>
+        <% adjustments.forEach((item) => { %>
+          <tr>
+            <td><%= item.product?.name %></td>
+            <td><%= item.user?.name %></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.reason %></td>
+            <td><%= new Date(item.createdAt).toLocaleString('id-ID') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partials/footer') %>

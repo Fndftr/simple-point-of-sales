@@ -1,0 +1,28 @@
+<%- include('../partials/head', { pageTitle, currentUser: null }) %>
+<section class="auth-card">
+  <div class="auth-copy">
+    <span class="eyebrow">Login POS</span>
+    <h1>Masuk untuk mengelola transaksi dan inventory.</h1>
+    <p>Gunakan akun admin atau kasir yang sudah ada di database.</p>
+    <div class="hint-list">
+      <span>admin / admin123</span>
+      <span>kasir / kasir123</span>
+    </div>
+  </div>
+  <form class="panel form" method="post" action="/login">
+    <h2>Login</h2>
+    <% if (error) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+    <label>
+      <span>Username</span>
+      <input type="text" name="username" placeholder="username" required />
+    </label>
+    <label>
+      <span>Password</span>
+      <input type="password" name="password" placeholder="password" required />
+    </label>
+    <button class="button primary full" type="submit">Masuk</button>
+  </form>
+</section>
+<%- include('../partials/footer') %>

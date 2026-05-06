@@ -1,0 +1,52 @@
+<%- include('../partials/head', { pageTitle, currentUser }) %>
+<section class="page-header">
+  <div>
+    <span class="eyebrow">Produk</span>
+    <h1>Daftar produk</h1>
+    <p>Kelola menu dan persediaan barang.</p>
+  </div>
+</section>
+<% if (currentUser.role === 'SUPERADMIN') { %>
+  <section class="panel form-grid">
+    <h2>Tambah Produk</h2>
+    <% if (error) { %><div class="alert error"><%= error %></div><% } %>
+    <form class="grid-form" method="post" action="/products">
+      <label><span>Nama</span><input name="name" required></label>
+      <label><span>Harga</span><input name="price" type="number" min="0" step="1" required></label>
+      <label><span>Stok</span><input name="stock" type="number" min="0" step="1" value="0"></label>
+      <label><span>Kategori</span>
+        <select name="categoryId">
+          <option value="">Tanpa kategori</option>
+          <% categories.forEach((category) => { %>
+            <option value="<%= category.id %>"><%= category.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <div class="full"><button class="button primary" type="submit">Simpan</button></div>
+    </form>
+  </section>
+<% } %>
+<section class="panel">
+  <div class="panel-head">
+    <h2>Semua Produk</h2>
+    <span class="muted"><%= products.length %> item</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Nama</th><th>Kategori</th><th>Harga</th><th>Stok</th></tr>
+      </thead>
+      <tbody>
+        <% products.forEach((product) => { %>
+          <tr>
+            <td><%= product.name %></td>
+            <td><%= product.category?.name || 'Tanpa kategori' %></td>
+            <td>Rp <%= Number(product.price).toLocaleString('id-ID') %></td>
+            <td><%= product.stock %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>
+<%- include('../partials/footer') %>

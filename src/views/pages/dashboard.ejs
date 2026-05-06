@@ -1,0 +1,60 @@
+<%- include('../partials/head', { pageTitle, currentUser }) %>
+<section class="page-header">
+  <div>
+    <span class="eyebrow">Selamat datang</span>
+    <h1><%= currentUser.name %></h1>
+    <p>Ringkasan operasional POS hari ini.</p>
+  </div>
+</section>
+<section class="stats-grid">
+  <article class="stat-card"><span>Produk</span><strong><%= stats.productCount %></strong></article>
+  <article class="stat-card"><span>Kategori</span><strong><%= stats.categoryCount %></strong></article>
+  <article class="stat-card"><span>User</span><strong><%= stats.userCount %></strong></article>
+  <article class="stat-card"><span>Transaksi</span><strong><%= stats.transactionCount %></strong></article>
+</section>
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Transaksi Terbaru</h2>
+      <a href="/transactions">Lihat semua</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Invoice</th><th>Kasir</th><th>Total</th><th>Tanggal</th></tr>
+        </thead>
+        <tbody>
+          <% recentTransactions.forEach((transaction) => { %>
+            <tr>
+              <td><a href="/transactions/<%= transaction.id %>/receipt"><%= transaction.invoiceNumber %></a></td>
+              <td><%= transaction.user?.name || '-' %></td>
+              <td>Rp <%= Number(transaction.totalAmount).toLocaleString('id-ID') %></td>
+              <td><%= new Date(transaction.createdAt).toLocaleString('id-ID') %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Stok Rendah</h2>
+      <a href="/products">Kelola produk</a>
+    </div>
+    <div class="stack">
+      <% lowStockProducts.forEach((product) => { %>
+        <article class="list-card">
+          <div>
+            <strong><%= product.name %></strong>
+            <div class="muted"><%= product.category?.name || 'Tanpa kategori' %></div>
+          </div>
+          <span class="pill danger">Stok <%= product.stock %></span>
+        </article>
+      <% }) %>
+      <% if (!lowStockProducts.length) { %>
+        <p class="muted">Tidak ada stok rendah.</p>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('../partials/footer') %>
